@@ -140,6 +140,10 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 		[0, 1],
 	]; // up, down, left, right
 
+	console.log(
+		`Checking captures for ${piece} moving to (${moveToRow}, ${moveToCol})`
+	);
+
 	directions.forEach(([dRow, dCol]) => {
 		const targetRow = moveToRow + dRow;
 		const targetCol = moveToCol + dCol;
@@ -160,6 +164,10 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 			return;
 		}
 
+		console.log(
+			`Checking potential capture of ${targetPiece} at (${targetRow}, ${targetCol})`
+		);
+
 		// Check for capture by looking for ally on opposite side
 		const oppositeRow = targetRow + dRow;
 		const oppositeCol = targetCol + dCol;
@@ -175,6 +183,12 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 		) {
 			const oppositePiece = board[oppositeRow][oppositeCol];
 
+			console.log(
+				`Opposite square (${oppositeRow}, ${oppositeCol}) has: ${oppositePiece}`
+			);
+			console.log(`Is corner: ${isCorner(oppositeRow, oppositeCol)}`);
+			console.log(`Is throne: ${isThrone(oppositeRow, oppositeCol)}`);
+
 			if (
 				oppositePiece === piece ||
 				(isThrone(oppositeRow, oppositeCol) &&
@@ -182,6 +196,9 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 				isCorner(oppositeRow, oppositeCol)
 			) {
 				captureCondition = true;
+				console.log(
+					`Capture condition TRUE for ${targetPiece} at (${targetRow}, ${targetCol})`
+				);
 			}
 		} else if (
 			isCorner(moveToRow, moveToCol) ||
@@ -189,49 +206,18 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 		) {
 			// Can capture against board edge if moving piece is on throne/corner
 			captureCondition = true;
+			console.log(`Edge capture condition TRUE`);
 		}
 
-		// Special king capture rules
-		if (targetPiece === PIECE_TYPES.KING) {
-			// King must be surrounded on all four sides to be captured
-			const kingRow = targetRow;
-			const kingCol = targetCol;
-			let surroundCount = 0;
-
-			directions.forEach(([kRow, kCol]) => {
-				const checkRow = kingRow + kRow;
-				const checkCol = kingCol + kCol;
-
-				if (
-					checkRow < 0 ||
-					checkRow >= BOARD_SIZE ||
-					checkCol < 0 ||
-					checkCol >= BOARD_SIZE
-				) {
-					surroundCount++; // Board edge counts as attacker
-				} else {
-					const checkPiece = board[checkRow][checkCol];
-					if (
-						checkPiece === PIECE_TYPES.ATTACKER ||
-						(isThrone(checkRow, checkCol) && !isThrone(kingRow, kingCol))
-					) {
-						surroundCount++;
-					}
-				}
-			});
-
-			if (surroundCount === 4) {
-				captureCondition = true;
-			} else {
-				captureCondition = false;
-			}
-		}
+		// King follows same capture rules as other pieces - no special 4-sides rule
 
 		if (captureCondition) {
 			captured.push({ row: targetRow, col: targetCol });
+			console.log(`CAPTURED: ${targetPiece} at (${targetRow}, ${targetCol})`);
 		}
 	});
 
+	console.log(`Total captures: ${captured.length}`);
 	return captured;
 };
 

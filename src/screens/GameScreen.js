@@ -52,6 +52,8 @@ const GameScreen = () => {
 						winner={winner}
 						moveHistory={moveHistory}
 						isAiThinking={isAiThinking}
+						gameMode={gameMode}
+						aiDifficulty={aiDifficulty}
 					/>
 				</View>
 

@@ -16,8 +16,8 @@ export const useGameState = () => {
 	const [board, setBoard] = useState(createInitialBoard());
 	const [currentPlayer, setCurrentPlayer] = useState("defenders"); // 'attackers' or 'defenders'
 	const [selectedSquare, setSelectedSquare] = useState(null);
-	const [gameMode, setGameMode] = useState("pvp"); // 'pvp', 'ai'
-	const [aiDifficulty, setAiDifficulty] = useState(DIFFICULTY_LEVELS.MEDIUM);
+	const [gameMode, setGameMode] = useState("ai"); // 'pvp', 'ai'
+	const [aiDifficulty, setAiDifficulty] = useState(DIFFICULTY_LEVELS.EASY);
 	const [gameStatus, setGameStatus] = useState("playing"); // 'playing', 'finished'
 	const [winner, setWinner] = useState(null);
 	const [moveHistory, setMoveHistory] = useState([]);
@@ -40,8 +40,8 @@ export const useGameState = () => {
 				const gameState = JSON.parse(savedState);
 				setBoard(gameState.board || createInitialBoard());
 				setCurrentPlayer(gameState.currentPlayer || "defenders");
-				setGameMode(gameState.gameMode || "pvp");
-				setAiDifficulty(gameState.aiDifficulty || DIFFICULTY_LEVELS.MEDIUM);
+				setGameMode(gameState.gameMode || "ai");
+				setAiDifficulty(gameState.aiDifficulty || DIFFICULTY_LEVELS.EASY);
 				setGameStatus(gameState.gameStatus || "playing");
 				setWinner(gameState.winner || null);
 				setMoveHistory(gameState.moveHistory || []);

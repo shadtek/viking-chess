@@ -20,66 +20,110 @@ const GameControls = ({
 	const getDifficultyColor = (difficulty) => {
 		switch (difficulty) {
 			case DIFFICULTY_LEVELS.EASY:
-				return "bg-green-600";
+				return "#16A34A"; // green-600
 			case DIFFICULTY_LEVELS.MEDIUM:
-				return "bg-yellow-600";
+				return "#CA8A04"; // yellow-600
 			case DIFFICULTY_LEVELS.HARD:
-				return "bg-red-600";
+				return "#DC2626"; // red-600
 			case DIFFICULTY_LEVELS.EXPERT:
-				return "bg-purple-600";
+				return "#9333EA"; // purple-600
 			default:
-				return "bg-gray-600";
+				return "#4B5563"; // gray-600
 		}
 	};
 
+	const containerStyle = {
+		padding: 16,
+		gap: 16,
+	};
+
+	const sectionStyle = {
+		backgroundColor: "#111827", // gray-900
+		padding: 16,
+		borderRadius: 8,
+		borderWidth: 1,
+		borderColor: "#374151", // gray-700
+		marginBottom: 16,
+	};
+
+	const titleStyle = {
+		color: "#FFFFFF",
+		fontSize: 18,
+		fontWeight: "bold",
+		marginBottom: 12,
+		textAlign: "center",
+	};
+
+	const buttonRowStyle = {
+		flexDirection: "row",
+		gap: 8,
+	};
+
+	const getButtonStyle = (isSelected, customColor = null) => ({
+		flex: 1,
+		padding: 12,
+		borderRadius: 8,
+		backgroundColor: isSelected
+			? customColor || "#2563EB" // blue-600
+			: "#374151", // gray-700
+	});
+
+	const buttonTextStyle = {
+		color: "#FFFFFF",
+		textAlign: "center",
+		fontWeight: "600",
+	};
+
+	const difficultyGridStyle = {
+		flexDirection: "row",
+		flexWrap: "wrap",
+		gap: 8,
+	};
+
+	const difficultyButtonStyle = (difficulty) => ({
+		width: "48%",
+		padding: 12,
+		borderRadius: 8,
+		backgroundColor:
+			aiDifficulty === difficulty ? getDifficultyColor(difficulty) : "#374151", // gray-700
+	});
+
 	return (
-		<View className="p-4 space-y-4">
+		<View style={containerStyle}>
 			{/* Game Mode Selection */}
-			<View className="bg-gray-900 p-4 rounded-lg border border-gray-700">
-				<Text className="text-white text-lg font-bold mb-3 text-center">
-					Game Mode
-				</Text>
-				<View className="flex-row space-x-2">
+			<View style={sectionStyle}>
+				<Text style={titleStyle}>Game Mode</Text>
+				<View style={buttonRowStyle}>
 					<TouchableOpacity
-						className={`flex-1 p-3 rounded-lg ${
-							gameMode === "pvp" ? "bg-blue-600" : "bg-gray-700"
-						}`}
+						style={getButtonStyle(gameMode === "pvp")}
 						onPress={() => onGameModeChange("pvp")}
 					>
-						<Text className="text-white text-center font-semibold">
-							Player vs Player
-						</Text>
+						<Text style={buttonTextStyle}>Player vs Player</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
-						className={`flex-1 p-3 rounded-lg ${
-							gameMode === "ai" ? "bg-blue-600" : "bg-gray-700"
-						}`}
+						style={getButtonStyle(gameMode === "ai")}
 						onPress={() => onGameModeChange("ai")}
 					>
-						<Text className="text-white text-center font-semibold">vs AI</Text>
+						<Text style={buttonTextStyle}>vs AI</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
 
 			{/* AI Difficulty Selection */}
 			{gameMode === "ai" && (
-				<View className="bg-gray-900 p-4 rounded-lg border border-gray-700">
-					<Text className="text-white text-lg font-bold mb-3 text-center">
-						AI Difficulty
-					</Text>
-					<View className="grid grid-cols-2 gap-2">
+				<View style={sectionStyle}>
+					<Text style={titleStyle}>AI Difficulty</Text>
+					<View style={difficultyGridStyle}>
 						{Object.values(DIFFICULTY_LEVELS).map((difficulty) => (
 							<TouchableOpacity
 								key={difficulty}
-								className={`p-3 rounded-lg ${
-									aiDifficulty === difficulty
-										? getDifficultyColor(difficulty)
-										: "bg-gray-700"
-								}`}
+								style={difficultyButtonStyle(difficulty)}
 								onPress={() => onDifficultyChange(difficulty)}
 							>
-								<Text className="text-white text-center font-semibold capitalize">
+								<Text
+									style={{ ...buttonTextStyle, textTransform: "capitalize" }}
+								>
 									{difficulty}
 								</Text>
 							</TouchableOpacity>
@@ -89,27 +133,33 @@ const GameControls = ({
 			)}
 
 			{/* Game Actions */}
-			<View className="bg-gray-900 p-4 rounded-lg border border-gray-700">
-				<Text className="text-white text-lg font-bold mb-3 text-center">
-					Game Actions
-				</Text>
+			<View style={sectionStyle}>
+				<Text style={titleStyle}>Game Actions</Text>
 				<TouchableOpacity
-					className="bg-red-600 p-3 rounded-lg"
+					style={{
+						backgroundColor: "#DC2626", // red-600
+						padding: 12,
+						borderRadius: 8,
+					}}
 					onPress={handleResetPress}
 				>
-					<Text className="text-white text-center font-semibold">New Game</Text>
+					<Text style={buttonTextStyle}>New Game</Text>
 				</TouchableOpacity>
 			</View>
 
 			{/* Game Rules Summary */}
-			<View className="bg-gray-900 p-4 rounded-lg border border-gray-700">
-				<Text className="text-white text-lg font-bold mb-2 text-center">
-					Quick Rules
-				</Text>
-				<Text className="text-gray-300 text-sm leading-5">
-					• <Text className="text-viking-orange">Attackers (Orange)</Text>:
+			<View style={sectionStyle}>
+				<Text style={titleStyle}>Quick Rules</Text>
+				<Text
+					style={{
+						color: "#D1D5DB", // gray-300
+						fontSize: 14,
+						lineHeight: 20,
+					}}
+				>
+					• <Text style={{ color: "#FF8C00" }}>Attackers (Orange)</Text>:
 					Capture the king{"\n"}•{" "}
-					<Text className="text-viking-blue">Defenders (Blue)</Text>: Get king
+					<Text style={{ color: "#4169E1" }}>Defenders (Blue)</Text>: Get king
 					to corner{"\n"}• Pieces move like rooks in chess{"\n"}• Capture by
 					surrounding pieces{"\n"}• King needs 4 sides surrounded to capture
 				</Text>

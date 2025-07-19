@@ -14,7 +14,7 @@ const STORAGE_KEY = "hnefatafl_game_state";
 
 export const useGameState = () => {
 	const [board, setBoard] = useState(createInitialBoard());
-	const [currentPlayer, setCurrentPlayer] = useState("attackers"); // 'attackers' or 'defenders'
+	const [currentPlayer, setCurrentPlayer] = useState("defenders"); // 'attackers' or 'defenders'
 	const [selectedSquare, setSelectedSquare] = useState(null);
 	const [gameMode, setGameMode] = useState("pvp"); // 'pvp', 'ai'
 	const [aiDifficulty, setAiDifficulty] = useState(DIFFICULTY_LEVELS.MEDIUM);
@@ -39,7 +39,7 @@ export const useGameState = () => {
 			if (savedState) {
 				const gameState = JSON.parse(savedState);
 				setBoard(gameState.board || createInitialBoard());
-				setCurrentPlayer(gameState.currentPlayer || "attackers");
+				setCurrentPlayer(gameState.currentPlayer || "defenders");
 				setGameMode(gameState.gameMode || "pvp");
 				setAiDifficulty(gameState.aiDifficulty || DIFFICULTY_LEVELS.MEDIUM);
 				setGameStatus(gameState.gameStatus || "playing");
@@ -55,7 +55,7 @@ export const useGameState = () => {
 	const resetGame = useCallback(() => {
 		const newBoard = createInitialBoard();
 		setBoard(newBoard);
-		setCurrentPlayer("attackers");
+		setCurrentPlayer("defenders");
 		setSelectedSquare(null);
 		setGameStatus("playing");
 		setWinner(null);
@@ -64,7 +64,7 @@ export const useGameState = () => {
 
 		const newGameState = {
 			board: newBoard,
-			currentPlayer: "attackers",
+			currentPlayer: "defenders",
 			gameMode,
 			aiDifficulty,
 			gameStatus: "playing",

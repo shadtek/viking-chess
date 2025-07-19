@@ -29,7 +29,7 @@ const GameBoard = ({
 		>
 			<View style={{ alignItems: "center" }}>
 				{/* Column labels */}
-				<View style={{ flexDirection: "row", marginBottom: 5 }}>
+				{/* <View style={{ flexDirection: "row", marginBottom: 5 }}>
 					<View style={{ width: 20 }} />
 					{Array.from({ length: BOARD_SIZE }, (_, i) => (
 						<Text
@@ -45,11 +45,11 @@ const GameBoard = ({
 							{i}
 						</Text>
 					))}
-				</View>
+				</View> */}
 
 				<View style={{ flexDirection: "row" }}>
 					{/* Row labels */}
-					<View style={{ justifyContent: "space-around", marginRight: 5 }}>
+					{/* <View style={{ justifyContent: "space-around", marginRight: 5 }}>
 						{Array.from({ length: BOARD_SIZE }, (_, i) => (
 							<Text
 								key={i}
@@ -66,7 +66,7 @@ const GameBoard = ({
 								{i}
 							</Text>
 						))}
-					</View>
+					</View> */}
 
 					{/* Game board */}
 					<View

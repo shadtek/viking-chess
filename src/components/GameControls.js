@@ -1,34 +1,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
-import { DIFFICULTY_LEVELS } from "../utils/gameLogic";
 
-const GameControls = ({
-	gameMode,
-	aiDifficulty,
-	onGameModeChange,
-	onDifficultyChange,
-	onResetGame,
-	isGameActive,
-}) => {
+const GameControls = ({ onResetGame, isGameActive }) => {
 	const handleResetPress = () => {
 		// For debugging, let's call reset directly first
 		console.log("Reset button pressed");
 		onResetGame();
-	};
-
-	const getDifficultyColor = (difficulty) => {
-		switch (difficulty) {
-			case DIFFICULTY_LEVELS.EASY:
-				return "#16A34A"; // green-600
-			case DIFFICULTY_LEVELS.MEDIUM:
-				return "#CA8A04"; // yellow-600
-			case DIFFICULTY_LEVELS.HARD:
-				return "#DC2626"; // red-600
-			case DIFFICULTY_LEVELS.EXPERT:
-				return "#9333EA"; // purple-600
-			default:
-				return "#4B5563"; // gray-600
-		}
 	};
 
 	const containerStyle = {
@@ -53,11 +30,6 @@ const GameControls = ({
 		textAlign: "center",
 	};
 
-	const buttonRowStyle = {
-		flexDirection: "row",
-		gap: 8,
-	};
-
 	const getButtonStyle = (isSelected, customColor = null) => ({
 		flex: 1,
 		padding: 12,
@@ -73,64 +45,8 @@ const GameControls = ({
 		fontWeight: "600",
 	};
 
-	const difficultyGridStyle = {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		gap: 8,
-	};
-
-	const difficultyButtonStyle = (difficulty) => ({
-		width: "48%",
-		padding: 12,
-		borderRadius: 8,
-		backgroundColor:
-			aiDifficulty === difficulty ? getDifficultyColor(difficulty) : "#374151", // gray-700
-	});
-
 	return (
 		<View style={containerStyle}>
-			{/* Game Mode Selection */}
-			<View style={sectionStyle}>
-				<Text style={titleStyle}>Game Mode</Text>
-				<View style={buttonRowStyle}>
-					<TouchableOpacity
-						style={getButtonStyle(gameMode === "pvp")}
-						onPress={() => onGameModeChange("pvp")}
-					>
-						<Text style={buttonTextStyle}>Player vs Player</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						style={getButtonStyle(gameMode === "ai")}
-						onPress={() => onGameModeChange("ai")}
-					>
-						<Text style={buttonTextStyle}>vs AI</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
-
-			{/* AI Difficulty Selection */}
-			{gameMode === "ai" && (
-				<View style={sectionStyle}>
-					<Text style={titleStyle}>AI Difficulty</Text>
-					<View style={difficultyGridStyle}>
-						{Object.values(DIFFICULTY_LEVELS).map((difficulty) => (
-							<TouchableOpacity
-								key={difficulty}
-								style={difficultyButtonStyle(difficulty)}
-								onPress={() => onDifficultyChange(difficulty)}
-							>
-								<Text
-									style={{ ...buttonTextStyle, textTransform: "capitalize" }}
-								>
-									{difficulty}
-								</Text>
-							</TouchableOpacity>
-						))}
-					</View>
-				</View>
-			)}
-
 			{/* Game Actions */}
 			<View style={sectionStyle}>
 				<Text style={titleStyle}>Game Actions</Text>

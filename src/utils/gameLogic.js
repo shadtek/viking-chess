@@ -7,13 +7,6 @@ export const PIECE_TYPES = {
 	EMPTY: "empty",
 };
 
-export const DIFFICULTY_LEVELS = {
-	EASY: "easy",
-	MEDIUM: "medium",
-	HARD: "hard",
-	EXPERT: "expert",
-};
-
 // Initial board setup for 11x11 Hnefatafl
 export const createInitialBoard = () => {
 	const board = Array(BOARD_SIZE)

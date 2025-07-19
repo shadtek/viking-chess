@@ -6,9 +6,7 @@ import {
 	getCapturedPieces,
 	checkWinCondition,
 	PIECE_TYPES,
-	DIFFICULTY_LEVELS,
 } from "../utils/gameLogic";
-import { getAIMove } from "../utils/aiLogic";
 
 const STORAGE_KEY = "hnefatafl_game_state";
 
@@ -16,12 +14,9 @@ export const useGameState = () => {
 	const [board, setBoard] = useState(createInitialBoard());
 	const [currentPlayer, setCurrentPlayer] = useState("defenders"); // 'attackers' or 'defenders'
 	const [selectedSquare, setSelectedSquare] = useState(null);
-	const [gameMode, setGameMode] = useState("ai"); // 'pvp', 'ai'
-	const [aiDifficulty, setAiDifficulty] = useState(DIFFICULTY_LEVELS.EASY);
 	const [gameStatus, setGameStatus] = useState("playing"); // 'playing', 'finished'
 	const [winner, setWinner] = useState(null);
 	const [moveHistory, setMoveHistory] = useState([]);
-	const [isAiThinking, setIsAiThinking] = useState(false);
 	const [captureAnimations, setCaptureAnimations] = useState([]); // Track active capture animations
 
 	// Save game state to AsyncStorage
@@ -41,8 +36,6 @@ export const useGameState = () => {
 				const gameState = JSON.parse(savedState);
 				setBoard(gameState.board || createInitialBoard());
 				setCurrentPlayer(gameState.currentPlayer || "defenders");
-				setGameMode(gameState.gameMode || "ai");
-				setAiDifficulty(gameState.aiDifficulty || DIFFICULTY_LEVELS.EASY);
 				setGameStatus(gameState.gameStatus || "playing");
 				setWinner(gameState.winner || null);
 				setMoveHistory(gameState.moveHistory || []);
@@ -62,21 +55,18 @@ export const useGameState = () => {
 		setGameStatus("playing");
 		setWinner(null);
 		setMoveHistory([]);
-		setIsAiThinking(false);
 		setCaptureAnimations([]); // Clear any active animations
 
 		const newGameState = {
 			board: newBoard,
 			currentPlayer: "defenders",
-			gameMode,
-			aiDifficulty,
 			gameStatus: "playing",
 			winner: null,
 			moveHistory: [],
 		};
 		saveGameState(newGameState);
 		console.log("Game reset completed");
-	}, [gameMode, aiDifficulty, saveGameState]);
+	}, [saveGameState]);
 
 	// Remove completed capture animation
 	const removeCaptureAnimation = useCallback((animationId) => {
@@ -89,8 +79,6 @@ export const useGameState = () => {
 	const handleSquarePress = useCallback(
 		(row, col) => {
 			if (gameStatus !== "playing") return;
-			if (isAiThinking) return;
-			if (gameMode === "ai" && currentPlayer === "attackers") return; // AI turn
 
 			const piece = board[row][col];
 
@@ -131,7 +119,7 @@ export const useGameState = () => {
 				}
 			}
 		},
-		[board, selectedSquare, currentPlayer, gameStatus, gameMode, isAiThinking]
+		[board, selectedSquare, currentPlayer, gameStatus]
 	);
 
 	// Make a move
@@ -192,69 +180,14 @@ export const useGameState = () => {
 			const newGameState = {
 				board: newBoard,
 				currentPlayer: winCondition.winner ? currentPlayer : newCurrentPlayer,
-				gameMode,
-				aiDifficulty,
 				gameStatus: winCondition.winner ? "finished" : "playing",
 				winner: winCondition.winner,
 				moveHistory: newMoveHistory,
 			};
 			saveGameState(newGameState);
 		},
-		[board, currentPlayer, moveHistory, gameMode, aiDifficulty, saveGameState]
+		[board, currentPlayer, moveHistory, saveGameState]
 	);
-
-	// AI move execution
-	const executeAIMove = useCallback(async () => {
-		if (
-			gameMode !== "ai" ||
-			currentPlayer !== "attackers" ||
-			gameStatus !== "playing"
-		) {
-			return;
-		}
-
-		setIsAiThinking(true);
-
-		// Add delay to show AI is thinking, but use shorter delay for expert to prevent long waits
-		const thinkingDelay =
-			aiDifficulty === DIFFICULTY_LEVELS.EXPERT
-				? 500
-				: 1000 + Math.random() * 2000;
-
-		setTimeout(() => {
-			try {
-				console.log("AI calculating move with difficulty:", aiDifficulty);
-				const aiMove = getAIMove(board, true, aiDifficulty);
-
-				if (aiMove) {
-					console.log("AI move found:", aiMove);
-					makeMove(
-						aiMove.from.row,
-						aiMove.from.col,
-						aiMove.to.row,
-						aiMove.to.col
-					);
-				} else {
-					console.warn("AI could not find a valid move");
-				}
-			} catch (error) {
-				console.error("Error in AI move calculation:", error);
-			} finally {
-				setIsAiThinking(false);
-			}
-		}, thinkingDelay);
-	}, [board, currentPlayer, gameMode, gameStatus, aiDifficulty, makeMove]);
-
-	// Effect to trigger AI moves
-	useEffect(() => {
-		if (
-			gameMode === "ai" &&
-			currentPlayer === "attackers" &&
-			gameStatus === "playing"
-		) {
-			executeAIMove();
-		}
-	}, [currentPlayer, gameMode, gameStatus, executeAIMove]);
 
 	// Load saved game on component mount
 	useEffect(() => {
@@ -299,19 +232,14 @@ export const useGameState = () => {
 		board,
 		currentPlayer,
 		selectedSquare,
-		gameMode,
-		aiDifficulty,
 		gameStatus,
 		winner,
 		moveHistory,
-		isAiThinking,
 		captureAnimations,
 
 		// Actions
 		handleSquarePress,
 		resetGame,
-		setGameMode,
-		setAiDifficulty,
 		removeCaptureAnimation,
 
 		// Utilities

@@ -1,22 +1,10 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-const GameStatus = ({
-	currentPlayer,
-	gameStatus,
-	winner,
-	moveHistory,
-	isAiThinking,
-	gameMode,
-	aiDifficulty,
-}) => {
+const GameStatus = ({ currentPlayer, gameStatus, winner, moveHistory }) => {
 	const getCurrentPlayerText = () => {
 		if (gameStatus === "finished") {
 			return winner === "attackers" ? "Attackers Win!" : "Defenders Win!";
-		}
-
-		if (isAiThinking) {
-			return "AI is thinking...";
 		}
 
 		return currentPlayer === "attackers"
@@ -27,10 +15,6 @@ const GameStatus = ({
 	const getCurrentPlayerColor = () => {
 		if (gameStatus === "finished") {
 			return winner === "attackers" ? "#FF8C00" : "#4169E1"; // viking-orange : viking-blue
-		}
-
-		if (isAiThinking) {
-			return "#FACC15"; // yellow-400
 		}
 
 		return currentPlayer === "attackers"
@@ -44,15 +28,6 @@ const GameStatus = ({
 
 	const getCapturedPieces = () => {
 		return moveHistory.reduce((total, move) => total + move.captured, 0);
-	};
-
-	const getGameModeText = () => {
-		if (gameMode === "ai") {
-			return `vs AI (${
-				aiDifficulty.charAt(0).toUpperCase() + aiDifficulty.slice(1)
-			})`;
-		}
-		return "Player vs Player";
 	};
 
 	const containerStyle = {
@@ -124,7 +99,7 @@ const GameStatus = ({
 		<View style={containerStyle}>
 			<Text style={mainTextStyle}>{getCurrentPlayerText()}</Text>
 
-			<Text style={gameModeStyle}>{getGameModeText()}</Text>
+			<Text style={gameModeStyle}>Player vs Player</Text>
 
 			<View style={statsRowStyle}>
 				<View style={statItemStyle}>

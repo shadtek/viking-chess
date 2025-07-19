@@ -15,11 +15,6 @@ Hnefatafl is an asymmetric strategy board game that was popular among the Viking
 ### 🎮 Game Modes
 
 - **Player vs Player**: Local multiplayer on the same device
-- **vs AI**: Play against computer opponents with 4 difficulty levels
-  - Easy
-  - Medium
-  - Hard
-  - Expert
 
 ### 🎯 Game Features
 
@@ -102,18 +97,6 @@ npm run ios
 
 - **Corners**: Only the King can occupy these squares, and they act as hostile squares for captures
 
-## AI Implementation
-
-The AI uses a minimax algorithm with alpha-beta pruning and evaluates positions based on:
-
-- Piece values and positioning
-- King's distance to corners
-- Control of center squares
-- Mobility of pieces
-- Capture opportunities
-
-Difficulty levels adjust search depth and evaluation weights to provide varied gameplay experiences.
-
 ## File Structure
 
 ```
@@ -129,8 +112,7 @@ src/
 ├── hooks/
 │   └── useGameState.js # Game state management
 └── utils/
-    ├── gameLogic.js    # Core game rules and logic
-    └── aiLogic.js      # AI implementation
+    └── gameLogic.js    # Core game rules and logic
 ```
 
 ## Development

@@ -10,32 +10,15 @@ const GameScreen = () => {
 		board,
 		currentPlayer,
 		selectedSquare,
-		gameMode,
-		aiDifficulty,
 		gameStatus,
 		winner,
 		moveHistory,
-		isAiThinking,
 		captureAnimations,
 		handleSquarePress,
 		resetGame,
-		setGameMode,
-		setAiDifficulty,
 		removeCaptureAnimation,
 		isValidMoveDestination,
 	} = useGameState();
-
-	const handleGameModeChange = (newMode) => {
-		setGameMode(newMode);
-		resetGame();
-	};
-
-	const handleDifficultyChange = (newDifficulty) => {
-		setAiDifficulty(newDifficulty);
-		if (gameMode === "ai") {
-			resetGame();
-		}
-	};
 
 	return (
 		<SafeAreaView className="flex-1 bg-black">
@@ -53,9 +36,6 @@ const GameScreen = () => {
 						gameStatus={gameStatus}
 						winner={winner}
 						moveHistory={moveHistory}
-						isAiThinking={isAiThinking}
-						gameMode={gameMode}
-						aiDifficulty={aiDifficulty}
 					/>
 				</View>
 
@@ -74,10 +54,6 @@ const GameScreen = () => {
 
 				{/* Game Controls */}
 				<GameControls
-					gameMode={gameMode}
-					aiDifficulty={aiDifficulty}
-					onGameModeChange={handleGameModeChange}
-					onDifficultyChange={handleDifficultyChange}
 					onResetGame={resetGame}
 					isGameActive={gameStatus === "playing"}
 				/>

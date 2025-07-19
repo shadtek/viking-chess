@@ -8,18 +8,36 @@ const GamePiece = ({ piece, isSelected, size = 24 }) => {
 	}
 
 	const getPieceStyle = () => {
-		const baseStyle = `w-${size} h-${size} rounded-full border-2 items-center justify-center`;
+		let backgroundColor, borderColor;
 
 		switch (piece) {
 			case PIECE_TYPES.ATTACKER:
-				return `${baseStyle} bg-viking-orange border-orange-600`;
+				backgroundColor = "#FF8C00"; // viking-orange
+				borderColor = "#EA580C"; // orange-600
+				break;
 			case PIECE_TYPES.DEFENDER:
-				return `${baseStyle} bg-viking-blue border-blue-600`;
+				backgroundColor = "#4169E1"; // viking-blue
+				borderColor = "#2563EB"; // blue-600
+				break;
 			case PIECE_TYPES.KING:
-				return `${baseStyle} bg-viking-purple border-purple-600`;
+				backgroundColor = "#8A2BE2"; // viking-purple
+				borderColor = "#9333EA"; // purple-600
+				break;
 			default:
-				return baseStyle;
+				backgroundColor = "#000000";
+				borderColor = "#FFFFFF";
 		}
+
+		return {
+			width: size,
+			height: size,
+			borderRadius: size / 2,
+			borderWidth: isSelected ? 4 : 2,
+			borderColor: isSelected ? "#FACC15" : borderColor, // yellow-400 when selected
+			backgroundColor,
+			alignItems: "center",
+			justifyContent: "center",
+		};
 	};
 
 	const getPieceSymbol = () => {
@@ -35,13 +53,15 @@ const GamePiece = ({ piece, isSelected, size = 24 }) => {
 		}
 	};
 
-	const selectedStyle = isSelected ? "border-yellow-400 border-4" : "";
-
 	return (
-		<View className={`${getPieceStyle()} ${selectedStyle}`}>
+		<View style={getPieceStyle()}>
 			<Text
-				className="text-white font-bold text-center"
-				style={{ fontSize: size * 0.6 }}
+				style={{
+					fontSize: size * 0.6,
+					color: "#FFFFFF",
+					fontWeight: "bold",
+					textAlign: "center",
+				}}
 			>
 				{getPieceSymbol()}
 			</Text>

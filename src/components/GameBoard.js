@@ -20,18 +20,21 @@ const GameBoard = ({
 				alignItems: "center",
 				justifyContent: "center",
 				paddingVertical: 20,
+				flex: 1,
 			}}
-			className="flex-1"
+			style={{ flex: 1 }}
 		>
 			<View
-				className="border-2 border-white bg-black"
 				style={{
 					width: squareSize * BOARD_SIZE,
 					height: squareSize * BOARD_SIZE,
+					borderWidth: 2,
+					borderColor: "#FFFFFF",
+					backgroundColor: "#000000",
 				}}
 			>
 				{board.map((row, rowIndex) => (
-					<View key={rowIndex} className="flex-row">
+					<View key={rowIndex} style={{ flexDirection: "row" }}>
 						{row.map((piece, colIndex) => (
 							<BoardSquare
 								key={`${rowIndex}-${colIndex}`}

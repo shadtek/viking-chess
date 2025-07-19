@@ -13,32 +13,48 @@ const BoardSquare = ({
 	size = 28,
 }) => {
 	const getSquareStyle = () => {
-		let baseStyle = `w-${size} h-${size} border border-white items-center justify-center`;
+		let backgroundColor = "#000000"; // black
 
 		// Special squares styling
 		if (isThrone(row, col)) {
-			baseStyle += " bg-gray-700";
+			backgroundColor = "#374151"; // gray-700
 		} else if (isCorner(row, col)) {
-			baseStyle += " bg-gray-600";
-		} else {
-			baseStyle += " bg-black";
+			backgroundColor = "#4B5563"; // gray-600
 		}
 
 		// Highlight valid moves
 		if (isValidMove) {
-			baseStyle += " bg-green-400 bg-opacity-50";
+			backgroundColor = "#34D399"; // green-400 with opacity
 		}
 
-		return baseStyle;
+		return {
+			width: size,
+			height: size,
+			backgroundColor,
+			borderWidth: 1,
+			borderColor: "#FFFFFF",
+			alignItems: "center",
+			justifyContent: "center",
+		};
 	};
 
 	return (
 		<TouchableOpacity
-			className={getSquareStyle()}
+			style={getSquareStyle()}
 			onPress={() => onPress(row, col)}
 			activeOpacity={0.7}
 		>
-			<View className="absolute inset-0 items-center justify-center">
+			<View
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
 				<GamePiece
 					piece={piece}
 					isSelected={isSelected}
@@ -48,8 +64,25 @@ const BoardSquare = ({
 
 			{/* Valid move indicator */}
 			{isValidMove && (
-				<View className="absolute inset-0 items-center justify-center">
-					<View className="w-2 h-2 bg-green-500 rounded-full" />
+				<View
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						alignItems: "center",
+						justifyContent: "center",
+					}}
+				>
+					<View
+						style={{
+							width: 8,
+							height: 8,
+							backgroundColor: "#10B981",
+							borderRadius: 4,
+						}}
+					/>
 				</View>
 			)}
 		</TouchableOpacity>

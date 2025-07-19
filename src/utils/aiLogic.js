@@ -61,13 +61,13 @@ const EVALUATION_WEIGHTS = {
 const getSearchDepth = (difficulty) => {
 	switch (difficulty) {
 		case DIFFICULTY_LEVELS.EASY:
-			return 2;
+			return 1;
 		case DIFFICULTY_LEVELS.MEDIUM:
-			return 3;
+			return 2;
 		case DIFFICULTY_LEVELS.HARD:
-			return 4;
+			return 3;
 		case DIFFICULTY_LEVELS.EXPERT:
-			return 5;
+			return 3; // Reduced from 5 to prevent timeout
 		default:
 			return 2;
 	}
@@ -280,6 +280,10 @@ export const getAIMove = (
 		return null;
 	}
 
+	// Limit the number of moves to evaluate for performance
+	const maxMovesToEvaluate = difficulty === DIFFICULTY_LEVELS.EXPERT ? 15 : 20;
+	const movesToEvaluate = moves.slice(0, maxMovesToEvaluate);
+
 	// Add some randomness for lower difficulties
 	let randomFactor = 0;
 	switch (difficulty) {
@@ -300,8 +304,24 @@ export const getAIMove = (
 	let bestMove = null;
 	let bestScore = -Infinity;
 
+	// Set a timeout for move calculation (max 3 seconds)
+	const startTime = Date.now();
+	const timeLimit = 3000; // 3 seconds
+
 	// Evaluate each move
-	const moveScores = moves.map((move) => {
+	const moveScores = [];
+
+	for (let i = 0; i < movesToEvaluate.length; i++) {
+		const move = movesToEvaluate[i];
+
+		// Check if we've exceeded time limit
+		if (Date.now() - startTime > timeLimit) {
+			console.warn(
+				"AI move calculation timed out, using best move found so far"
+			);
+			break;
+		}
+
 		const newBoard = applyMove(board, move);
 		let score = minimax(newBoard, depth - 1, false, isAttackerTurn, difficulty);
 
@@ -310,12 +330,26 @@ export const getAIMove = (
 			score += (Math.random() - 0.5) * randomFactor * 1000;
 		}
 
-		return { move, score };
-	});
+		moveScores.push({ move, score });
 
-	// Sort by score and pick the best
-	moveScores.sort((a, b) => b.score - a.score);
-	bestMove = moveScores[0].move;
+		// Update best move as we go
+		if (score > bestScore) {
+			bestScore = score;
+			bestMove = move;
+		}
+	}
+
+	// If we have move scores, sort and pick the best
+	if (moveScores.length > 0) {
+		moveScores.sort((a, b) => b.score - a.score);
+		bestMove = moveScores[0].move;
+	}
+
+	// Fallback to a random move if no moves were evaluated
+	if (!bestMove && moves.length > 0) {
+		bestMove = moves[Math.floor(Math.random() * moves.length)];
+		console.warn("AI fallback to random move");
+	}
 
 	return bestMove;
 };

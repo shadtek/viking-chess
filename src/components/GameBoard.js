@@ -1,6 +1,7 @@
 import React from "react";
 import { View, ScrollView, Dimensions } from "react-native";
 import BoardSquare from "./BoardSquare";
+import CaptureAnimation from "./CaptureAnimation";
 import { BOARD_SIZE } from "../utils/gameLogic";
 
 const GameBoard = ({
@@ -8,6 +9,8 @@ const GameBoard = ({
 	selectedSquare,
 	onSquarePress,
 	isValidMoveDestination,
+	captureAnimations,
+	onCaptureAnimationComplete,
 	maxWidth = 320,
 }) => {
 	const screenWidth = Dimensions.get("window").width;
@@ -31,6 +34,7 @@ const GameBoard = ({
 					borderWidth: 2,
 					borderColor: "#FFFFFF",
 					backgroundColor: "#000000",
+					position: "relative",
 				}}
 			>
 				{board.map((row, rowIndex) => (
@@ -53,6 +57,18 @@ const GameBoard = ({
 						))}
 					</View>
 				))}
+
+				{/* Render capture animations */}
+				{captureAnimations &&
+					captureAnimations.map((animation) => (
+						<CaptureAnimation
+							key={animation.id}
+							row={animation.row}
+							col={animation.col}
+							squareSize={squareSize}
+							onComplete={() => onCaptureAnimationComplete(animation.id)}
+						/>
+					))}
 			</View>
 		</ScrollView>
 	);

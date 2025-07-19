@@ -16,10 +16,12 @@ const GameScreen = () => {
 		winner,
 		moveHistory,
 		isAiThinking,
+		captureAnimations,
 		handleSquarePress,
 		resetGame,
 		setGameMode,
 		setAiDifficulty,
+		removeCaptureAnimation,
 		isValidMoveDestination,
 	} = useGameState();
 
@@ -65,6 +67,8 @@ const GameScreen = () => {
 						onSquarePress={handleSquarePress}
 						isValidMoveDestination={isValidMoveDestination}
 						maxWidth={320}
+						captureAnimations={captureAnimations}
+						onCaptureAnimationComplete={removeCaptureAnimation}
 					/>
 				</View>
 

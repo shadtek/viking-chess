@@ -22,6 +22,7 @@ export const useGameState = () => {
 	const [winner, setWinner] = useState(null);
 	const [moveHistory, setMoveHistory] = useState([]);
 	const [isAiThinking, setIsAiThinking] = useState(false);
+	const [captureAnimations, setCaptureAnimations] = useState([]); // Track active capture animations
 
 	// Save game state to AsyncStorage
 	const saveGameState = useCallback(async (gameState) => {
@@ -53,6 +54,7 @@ export const useGameState = () => {
 
 	// Reset game to initial state
 	const resetGame = useCallback(() => {
+		console.log("resetGame function called");
 		const newBoard = createInitialBoard();
 		setBoard(newBoard);
 		setCurrentPlayer("defenders");
@@ -61,6 +63,7 @@ export const useGameState = () => {
 		setWinner(null);
 		setMoveHistory([]);
 		setIsAiThinking(false);
+		setCaptureAnimations([]); // Clear any active animations
 
 		const newGameState = {
 			board: newBoard,
@@ -72,7 +75,15 @@ export const useGameState = () => {
 			moveHistory: [],
 		};
 		saveGameState(newGameState);
+		console.log("Game reset completed");
 	}, [gameMode, aiDifficulty, saveGameState]);
+
+	// Remove completed capture animation
+	const removeCaptureAnimation = useCallback((animationId) => {
+		setCaptureAnimations((prev) =>
+			prev.filter((anim) => anim.id !== animationId)
+		);
+	}, []);
 
 	// Handle square selection
 	const handleSquarePress = useCallback(
@@ -135,6 +146,17 @@ export const useGameState = () => {
 
 			// Handle captures
 			const captured = getCapturedPieces(newBoard, toRow, toCol, piece);
+
+			// Trigger capture animations if there are captures
+			if (captured.length > 0) {
+				const newAnimations = captured.map(({ row, col }, index) => ({
+					id: Date.now() + index, // Unique ID for each animation
+					row,
+					col,
+				}));
+				setCaptureAnimations((prev) => [...prev, ...newAnimations]);
+			}
+
 			captured.forEach(({ row, col }) => {
 				newBoard[row][col] = PIECE_TYPES.EMPTY;
 			});
@@ -193,21 +215,34 @@ export const useGameState = () => {
 
 		setIsAiThinking(true);
 
-		// Add delay to show AI is thinking
+		// Add delay to show AI is thinking, but use shorter delay for expert to prevent long waits
+		const thinkingDelay =
+			aiDifficulty === DIFFICULTY_LEVELS.EXPERT
+				? 500
+				: 1000 + Math.random() * 2000;
+
 		setTimeout(() => {
-			const aiMove = getAIMove(board, true, aiDifficulty);
+			try {
+				console.log("AI calculating move with difficulty:", aiDifficulty);
+				const aiMove = getAIMove(board, true, aiDifficulty);
 
-			if (aiMove) {
-				makeMove(
-					aiMove.from.row,
-					aiMove.from.col,
-					aiMove.to.row,
-					aiMove.to.col
-				);
+				if (aiMove) {
+					console.log("AI move found:", aiMove);
+					makeMove(
+						aiMove.from.row,
+						aiMove.from.col,
+						aiMove.to.row,
+						aiMove.to.col
+					);
+				} else {
+					console.warn("AI could not find a valid move");
+				}
+			} catch (error) {
+				console.error("Error in AI move calculation:", error);
+			} finally {
+				setIsAiThinking(false);
 			}
-
-			setIsAiThinking(false);
-		}, 1000 + Math.random() * 2000); // 1-3 second delay
+		}, thinkingDelay);
 	}, [board, currentPlayer, gameMode, gameStatus, aiDifficulty, makeMove]);
 
 	// Effect to trigger AI moves
@@ -270,12 +305,14 @@ export const useGameState = () => {
 		winner,
 		moveHistory,
 		isAiThinking,
+		captureAnimations,
 
 		// Actions
 		handleSquarePress,
 		resetGame,
 		setGameMode,
 		setAiDifficulty,
+		removeCaptureAnimation,
 
 		// Utilities
 		getValidMoves,

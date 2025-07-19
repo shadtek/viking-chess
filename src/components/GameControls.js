@@ -11,10 +11,9 @@ const GameControls = ({
 	isGameActive,
 }) => {
 	const handleResetPress = () => {
-		Alert.alert("Reset Game", "Are you sure you want to start a new game?", [
-			{ text: "Cancel", style: "cancel" },
-			{ text: "Reset", style: "destructive", onPress: onResetGame },
-		]);
+		// For debugging, let's call reset directly first
+		console.log("Reset button pressed");
+		onResetGame();
 	};
 
 	const getDifficultyColor = (difficulty) => {
@@ -161,7 +160,8 @@ const GameControls = ({
 					Capture the king{"\n"}•{" "}
 					<Text style={{ color: "#4169E1" }}>Defenders (Blue)</Text>: Get king
 					to corner{"\n"}• Pieces move like rooks in chess{"\n"}• Capture by
-					surrounding pieces{"\n"}• King needs 4 sides surrounded to capture
+					surrounding pieces on opposite sides{"\n"}• King can be captured like
+					any other piece
 				</Text>
 			</View>
 		</View>

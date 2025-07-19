@@ -118,12 +118,9 @@ export const isValidMove = (board, fromRow, fromCol, toRow, toCol) => {
 		currentCol += stepCol;
 	}
 
-	// Only king can occupy throne or corners
+	// Only king can occupy corners (not throne - throne is normal square)
 	const piece = board[fromRow][fromCol];
-	if (
-		(isThrone(toRow, toCol) || isCorner(toRow, toCol)) &&
-		piece !== PIECE_TYPES.KING
-	) {
+	if (isCorner(toRow, toCol) && piece !== PIECE_TYPES.KING) {
 		return false;
 	}
 
@@ -189,22 +186,14 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 			console.log(`Is corner: ${isCorner(oppositeRow, oppositeCol)}`);
 			console.log(`Is throne: ${isThrone(oppositeRow, oppositeCol)}`);
 
-			if (
-				oppositePiece === piece ||
-				(isThrone(oppositeRow, oppositeCol) &&
-					!isThrone(targetRow, targetCol)) ||
-				isCorner(oppositeRow, oppositeCol)
-			) {
+			if (oppositePiece === piece || isCorner(oppositeRow, oppositeCol)) {
 				captureCondition = true;
 				console.log(
 					`Capture condition TRUE for ${targetPiece} at (${targetRow}, ${targetCol})`
 				);
 			}
-		} else if (
-			isCorner(moveToRow, moveToCol) ||
-			isThrone(moveToRow, moveToCol)
-		) {
-			// Can capture against board edge if moving piece is on throne/corner
+		} else if (isCorner(moveToRow, moveToCol)) {
+			// Can capture against board edge if moving piece is on corner
 			captureCondition = true;
 			console.log(`Edge capture condition TRUE`);
 		}

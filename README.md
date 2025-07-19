@@ -85,12 +85,12 @@ npm run ios
 
 - All pieces move like rooks in chess (horizontally or vertically)
 - Pieces cannot jump over other pieces
-- Only the King can occupy the throne (center square) and corner squares
+- Only the King can occupy corner squares (throne is a normal square)
 
 ### Capturing
 
-- Pieces are captured by being surrounded on two opposite sides
-- The King requires being surrounded on all four sides to be captured
+- Pieces are captured by being surrounded on two opposite sides by enemy pieces or corners
+- Corners act as hostile squares for capture purposes
 - Captured pieces are immediately removed from the board
 
 ### Victory Conditions
@@ -100,8 +100,7 @@ npm run ios
 
 ### Special Squares
 
-- **Throne** (center): Only the King can occupy this square
-- **Corners**: Only the King can occupy these squares (and they represent escape points)
+- **Corners**: Only the King can occupy these squares, and they act as hostile squares for captures
 
 ## AI Implementation
 

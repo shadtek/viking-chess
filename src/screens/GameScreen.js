@@ -30,14 +30,14 @@ const GameScreen = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				{/* Game Status */}
-				{/* <View className="pt-4">
+				<View className="pt-4">
 					<GameStatus
 						currentPlayer={currentPlayer}
 						gameStatus={gameStatus}
 						winner={winner}
 						moveHistory={moveHistory}
 					/>
-				</View> */}
+				</View>
 
 				{/* Game Board */}
 				<View className="flex-1 justify-center">

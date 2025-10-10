@@ -31,6 +31,7 @@ const GameStatus = ({ currentPlayer, gameStatus, winner, moveHistory }) => {
 	};
 
 	const containerStyle = {
+		marginTop: 20,
 		backgroundColor: "#111827", // gray-900
 		padding: 16,
 		marginHorizontal: 16,
@@ -99,9 +100,9 @@ const GameStatus = ({ currentPlayer, gameStatus, winner, moveHistory }) => {
 		<View style={containerStyle}>
 			<Text style={mainTextStyle}>{getCurrentPlayerText()}</Text>
 
-			<Text style={gameModeStyle}>Player vs Player</Text>
+			{/* <Text style={gameModeStyle}>Player vs Player</Text> */}
 
-			<View style={statsRowStyle}>
+			{/* <View style={statsRowStyle}>
 				<View style={statItemStyle}>
 					<Text style={statLabelStyle}>Moves</Text>
 					<Text style={statValueStyle}>{getMoveCount()}</Text>
@@ -118,15 +119,15 @@ const GameStatus = ({ currentPlayer, gameStatus, winner, moveHistory }) => {
 						{gameStatus === "playing" ? "Active" : "Finished"}
 					</Text>
 				</View>
-			</View>
+			</View> */}
 
-			{gameStatus === "finished" && (
+			{/* {gameStatus === "finished" && (
 				<View style={finishedContainerStyle}>
 					<Text style={finishedTextStyle}>
 						Game completed in {getMoveCount()} moves
 					</Text>
 				</View>
-			)}
+			)} */}
 		</View>
 	);
 };

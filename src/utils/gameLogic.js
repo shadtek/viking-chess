@@ -1,4 +1,6 @@
 // Hnefatafl Game Constants and Logic
+// Helper to check if a piece is an attacker
+export const isAttacker = (piece) => piece === PIECE_TYPES.ATTACKER;
 export const BOARD_SIZE = 11;
 export const PIECE_TYPES = {
 	ATTACKER: "attacker",
@@ -83,16 +85,19 @@ export const isThrone = (row, col) => {
 export const isValidMove = (board, fromRow, fromCol, toRow, toCol) => {
 	// Check bounds
 	if (toRow < 0 || toRow >= BOARD_SIZE || toCol < 0 || toCol >= BOARD_SIZE) {
+		console.log('Move rejected: out of bounds');
 		return false;
 	}
 
 	// Check if destination is empty
 	if (board[toRow][toCol] !== PIECE_TYPES.EMPTY) {
+		console.log('Move rejected: destination not empty');
 		return false;
 	}
 
 	// Check if moving in straight line (horizontal or vertical)
 	if (fromRow !== toRow && fromCol !== toCol) {
+		console.log('Move rejected: not straight line');
 		return false;
 	}
 
@@ -105,6 +110,7 @@ export const isValidMove = (board, fromRow, fromCol, toRow, toCol) => {
 
 	while (currentRow !== toRow || currentCol !== toCol) {
 		if (board[currentRow][currentCol] !== PIECE_TYPES.EMPTY) {
+			console.log('Move rejected: path blocked');
 			return false;
 		}
 		currentRow += stepRow;
@@ -114,9 +120,11 @@ export const isValidMove = (board, fromRow, fromCol, toRow, toCol) => {
 	// Only king can occupy corners (not throne - throne is normal square)
 	const piece = board[fromRow][fromCol];
 	if (isCorner(toRow, toCol) && piece !== PIECE_TYPES.KING) {
+		console.log('Move rejected: only king can occupy corner');
 		return false;
 	}
 
+	console.log('Move accepted:', { fromRow, fromCol, toRow, toCol, piece });
 	return true;
 };
 
@@ -191,11 +199,18 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 			console.log(`Edge capture condition TRUE`);
 		}
 
-		// King follows same capture rules as other pieces - no special 4-sides rule
-
-		if (captureCondition) {
-			captured.push({ row: targetRow, col: targetCol });
-			console.log(`CAPTURED: ${targetPiece} at (${targetRow}, ${targetCol})`);
+		// King can only be captured by attackers
+		if (targetPiece === PIECE_TYPES.KING) {
+			// Defenders can move to sandwich the king, but only attackers can capture
+			if (captureCondition && isAttacker(piece)) {
+				captured.push({ row: targetRow, col: targetCol });
+				console.log(`CAPTURED: ${targetPiece} at (${targetRow}, ${targetCol})`);
+			} // else: defenders sandwiching king does nothing
+		} else {
+			if (captureCondition) {
+				captured.push({ row: targetRow, col: targetCol });
+				console.log(`CAPTURED: ${targetPiece} at (${targetRow}, ${targetCol})`);
+			}
 		}
 	});
 

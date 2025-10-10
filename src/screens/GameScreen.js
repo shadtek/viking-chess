@@ -4,6 +4,7 @@ import { useGameState } from "../hooks/useGameState";
 import GameBoard from "../components/GameBoard";
 import GameStatus from "../components/GameStatus";
 import GameControls from "../components/GameControls";
+import BuiltBySpencer from "../components/BuiltBySpencer";
 
 const GameScreen = () => {
 	const {
@@ -57,6 +58,7 @@ const GameScreen = () => {
 					onResetGame={resetGame}
 					isGameActive={gameStatus === "playing"}
 				/>
+				<BuiltBySpencer />
 			</ScrollView>
 		</SafeAreaView>
 	);

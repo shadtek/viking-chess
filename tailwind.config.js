@@ -10,9 +10,9 @@ module.exports = {
 				"viking-blue": "#4169E1",
 				"viking-purple": "#8A2BE2",
 			},
-			maxWidth: {
-				"game-board": "320px",
-			},
+			// maxWidth: {
+			// 	"game-board": "320px",
+			// },
 		},
 	},
 	plugins: [],

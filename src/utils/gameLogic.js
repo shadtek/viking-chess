@@ -1,6 +1,15 @@
 // Hnefatafl Game Constants and Logic
 // Helper to check if a piece is an attacker
 export const isAttacker = (piece) => piece === PIECE_TYPES.ATTACKER;
+
+// Helper to check if a piece is a defender (includes king)
+export const isDefender = (piece) => piece === PIECE_TYPES.DEFENDER || piece === PIECE_TYPES.KING;
+
+// Helper to check if two pieces are on the same team
+export const isSameTeam = (piece1, piece2) => {
+	if (piece1 === PIECE_TYPES.EMPTY || piece2 === PIECE_TYPES.EMPTY) return false;
+	return (isAttacker(piece1) && isAttacker(piece2)) || (isDefender(piece1) && isDefender(piece2));
+};
 export const BOARD_SIZE = 11;
 export const PIECE_TYPES = {
 	ATTACKER: "attacker",
@@ -157,8 +166,8 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 
 		const targetPiece = board[targetRow][targetCol];
 
-		// Can't capture empty squares or same type
-		if (targetPiece === PIECE_TYPES.EMPTY || targetPiece === piece) {
+		// Can't capture empty squares or same team pieces
+		if (targetPiece === PIECE_TYPES.EMPTY || isSameTeam(targetPiece, piece)) {
 			return;
 		}
 
@@ -187,7 +196,7 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 			console.log(`Is corner: ${isCorner(oppositeRow, oppositeCol)}`);
 			console.log(`Is throne: ${isThrone(oppositeRow, oppositeCol)}`);
 
-			if (oppositePiece === piece || isCorner(oppositeRow, oppositeCol)) {
+			if (isSameTeam(oppositePiece, piece) || isCorner(oppositeRow, oppositeCol)) {
 				captureCondition = true;
 				console.log(
 					`Capture condition TRUE for ${targetPiece} at (${targetRow}, ${targetCol})`
@@ -207,6 +216,7 @@ export const getCapturedPieces = (board, moveToRow, moveToCol, piece) => {
 				console.log(`CAPTURED: ${targetPiece} at (${targetRow}, ${targetCol})`);
 			} // else: defenders sandwiching king does nothing
 		} else {
+			// King and other pieces can capture normally (not targeting the king)
 			if (captureCondition) {
 				captured.push({ row: targetRow, col: targetCol });
 				console.log(`CAPTURED: ${targetPiece} at (${targetRow}, ${targetCol})`);

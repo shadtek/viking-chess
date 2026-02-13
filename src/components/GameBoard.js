@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, ScrollView, Dimensions, Text } from "react-native";
 import BoardSquare from "./BoardSquare";
 import CaptureAnimation from "./CaptureAnimation";
@@ -11,74 +11,60 @@ const GameBoard = ({
 	isValidMoveDestination,
 	captureAnimations,
 	onCaptureAnimationComplete,
-	maxWidth = 320,
+	heightPercentage = 0.6, // Default to 60% of screen height
 }) => {
-	const screenWidth = Dimensions.get("window").width;
-	const boardWidth = Math.min(maxWidth, screenWidth - 40);
+	const [dimensions, setDimensions] = useState(Dimensions.get("window"));
+	
+	useEffect(() => {
+		const subscription = Dimensions.addEventListener("change", ({ window }) => {
+			setDimensions(window);
+		});
+
+		return () => subscription?.remove();
+	}, []);
+	
+	// Calculate board size based on screen height percentage with 16px padding
+	const availableWidth = dimensions.width - 32; // 16px padding on each side (handled by parent ScrollView)
+	const targetBoardSize = dimensions.height * heightPercentage;
+	const boardWidth = Math.min(targetBoardSize, availableWidth);
 	const squareSize = Math.floor(boardWidth / BOARD_SIZE);
+	const actualBoardSize = squareSize * BOARD_SIZE; // The actual board size after rounding
+
+	console.log("Dimensions:", dimensions);
+	console.log("Available width:", availableWidth);
+	console.log("Target board size:", targetBoardSize);
+	console.log("Calculated board width:", boardWidth);
+	console.log("Square size:", squareSize);
+	console.log("Actual board size:", actualBoardSize);
+
+	const logDimensions = (event, id) => {
+		const { width, height } = event.nativeEvent.layout;
+		console.log(`[${id}] Layout - Width: ${width}, Height: ${height}`);
+	};
 
 	return (
-		<ScrollView
-			contentContainerStyle={{
+		<View 
+			style={{ 
 				alignItems: "center",
 				justifyContent: "center",
-				paddingVertical: 20,
-				flex: 1,
+				width: actualBoardSize,
+				height: actualBoardSize,
 			}}
-			style={{ flex: 1 }}
+			nativeID="gameboard-outer"
+			onLayout={(event) => logDimensions(event, "gameboard-outer")}
 		>
-			<View style={{ alignItems: "center" }}>
-				{/* Column labels */}
-				{/* <View style={{ flexDirection: "row", marginBottom: 5 }}>
-					<View style={{ width: 20 }} />
-					{Array.from({ length: BOARD_SIZE }, (_, i) => (
-						<Text
-							key={i}
-							style={{
-								width: squareSize,
-								textAlign: "center",
-								color: "#000000",
-								fontSize: 12,
-								fontWeight: "bold",
-							}}
-						>
-							{i}
-						</Text>
-					))}
-				</View> */}
-
-				<View style={{ flexDirection: "row" }}>
-					{/* Row labels */}
-					{/* <View style={{ justifyContent: "space-around", marginRight: 5 }}>
-						{Array.from({ length: BOARD_SIZE }, (_, i) => (
-							<Text
-								key={i}
-								style={{
-									height: squareSize,
-									lineHeight: squareSize,
-									textAlign: "center",
-									color: "#000000",
-									fontSize: 12,
-									fontWeight: "bold",
-									width: 20,
-								}}
-							>
-								{i}
-							</Text>
-						))}
-					</View> */}
-
-					{/* Game board */}
-					<View
-						style={{
-							width: squareSize * BOARD_SIZE,
-							height: squareSize * BOARD_SIZE,
-							borderWidth: 2,
-							borderColor: "#FFFFFF",
-							backgroundColor: "#000000",
-							position: "relative",
-						}}
-					>
+			{/* Game board */}
+			<View
+				style={{
+					width: actualBoardSize,
+					height: actualBoardSize,
+					borderColor: "#FFFFFF",
+					backgroundColor: "#000000",
+					position: "relative",
+				}}
+				nativeID="gameboard-inner"
+				onLayout={(event) => logDimensions(event, "gameboard-inner")}
+			>
 						{board.map((row, rowIndex) => (
 							<View key={rowIndex} style={{ flexDirection: "row" }}>
 								{row.map((piece, colIndex) => (
@@ -111,10 +97,8 @@ const GameBoard = ({
 									onComplete={() => onCaptureAnimationComplete(animation.id)}
 								/>
 							))}
-					</View>
-				</View>
 			</View>
-		</ScrollView>
+		</View>
 	);
 };
 

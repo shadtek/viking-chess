@@ -76,8 +76,7 @@ const GameControls = ({ onResetGame, isGameActive }) => {
 					Capture the king{"\n"}•{" "}
 					<Text style={{ color: "#4169E1" }}>Defenders (Blue)</Text>: Get king
 					to corner{"\n"}• Pieces move like rooks in chess{"\n"}• Capture by
-					surrounding pieces on opposite sides{"\n"}• King can be captured like
-					any other piece
+					surrounding pieces on opposite sides
 				</Text>
 			</View>
 		</View>

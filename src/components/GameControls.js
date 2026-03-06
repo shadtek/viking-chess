@@ -1,16 +1,26 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert, Platform } from "react-native";
 
 const GameControls = ({ onResetGame, isGameActive }) => {
   const handleResetPress = () => {
-    Alert.alert(
-      "Start New Game?",
-      "Are you sure you want to reset the board? This will start a new game.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Yes", onPress: () => onResetGame() },
-      ],
-    );
+    if (Platform.OS === "web") {
+      if (
+        window.confirm(
+          "Are you sure you want to reset the board? This will start a new game.",
+        )
+      ) {
+        onResetGame();
+      }
+    } else {
+      Alert.alert(
+        "Start New Game?",
+        "Are you sure you want to reset the board? This will start a new game.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Yes", onPress: () => onResetGame() },
+        ],
+      );
+    }
   };
 
   const containerStyle = {
